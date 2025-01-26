@@ -15,5 +15,20 @@ type Query {
   randomFromZeroTo(to: Int): Int!
   todos: [Todo!]!
   todoId(id: Int): Todo!
-  createTodo: String!
+}
+
+type Mutation {
+  createTodo(CreateTodoInput: CreateTodoInput!): Todo!
+  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
+  removeTodo(id: Int!): Boolean!
+}
+
+input CreateTodoInput {
+  description: String!
+}
+
+input UpdateTodoInput {
+  id: Int!
+  description: String
+  done: Boolean!
 }
