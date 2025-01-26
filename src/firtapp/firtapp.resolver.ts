@@ -18,3 +18,4 @@ export class FirtappResolver {
         return Math.floor(Math.random() * to);
     }
 }
+

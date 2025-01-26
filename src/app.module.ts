@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { FirtappModule } from './firtapp/firtapp.module';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import { TodoModule } from './todo/todo.module';
 
 
 @Module({
@@ -18,6 +19,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
       ],
     }),
     FirtappModule,
+    TodoModule,
   ],
   controllers: [],
   providers: [],

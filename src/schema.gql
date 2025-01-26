@@ -2,9 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Todo {
+  id: Int!
+  description: String!
+  done: String!
+}
+
 type Query {
   firtsApp: String!
 
   """From Zero to argument TO (default: 6)"""
   randomFromZeroTo(to: Int): Int!
+  todos: [Todo!]!
+  todoId(id: Int): Todo!
+  createTodo: String!
 }
