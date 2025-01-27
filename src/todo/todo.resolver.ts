@@ -2,8 +2,9 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { Todo } from './entity/todo.entity';
 import { TodoService } from './todo.service';
-import { CreateTodoInput } from './dto/inputs/create-todo.inputs';
-import { UpdateTodoInput } from './dto/inputs/update-todo.inputs';
+import { CreateTodoInput, UpdateTodoInput } from './dto/inputs';
+import { StatusArgs } from './dto/args/status.args';
+import { AggregationsType } from './types/aggregations.type';
 
 
 @Resolver(() => Todo)
@@ -13,10 +14,11 @@ export class TodoResolver {
         private readonly todoService: TodoService
     ) { }
 
-
     @Query(() => [Todo], { name: 'todos' })
-    findAll(): Todo[] {
-        return this.todoService.findAll();
+    findAll(
+        @Args() statusArgs: StatusArgs
+    ): Todo[] {
+        return this.todoService.findAll(statusArgs);
     }
 
     @Query(() => Todo, { name: 'todoId' })
@@ -37,13 +39,37 @@ export class TodoResolver {
     @Mutation(() => Todo, { name: 'updateTodo' })
     updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
 
-        return this.todoService.update(updateTodoInput.id,updateTodoInput);
-
+        return this.todoService.update(updateTodoInput.id, updateTodoInput);
     }
 
     @Mutation(() => Boolean, { name: 'removeTodo' })
     removeTodo(@Args('id', { type: () => Int }) id: number) {
         return this.todoService.remove(id);
     }
+
+    @Query(() => Int, { name: 'totalTodos' })
+    totalTodos(): number {
+        return this.todoService.totalTodos;
+    }
+
+    @Query(() => Int, { name: 'completedTodos' })
+    completedTodos(): number {
+        return this.todoService.completedTodos;
+    }
+    @Query(() => Int, { name: 'pendingTodos' })
+    pendingTodos(): number {
+        return this.todoService.pendingTodos;
+    }
+
+    @Query(() => AggregationsType)
+    aggregations(): AggregationsType {
+        return {
+            completed: this.todoService.completedTodos,
+            pending: this.todoService.pendingTodos,
+            total: this.todoService.totalTodos,
+            totalTodosCompleted: this.todoService.totalTodos,
+        }
+    }
+
 
 }

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Todo } from './entity/todo.entity';
 import { CreateTodoInput } from './dto/inputs/create-todo.inputs';
 import { UpdateTodoInput } from './dto/inputs/update-todo.inputs';
+import { StatusArgs } from './dto/args/status.args';
 
 @Injectable()
 export class TodoService {
@@ -21,11 +22,39 @@ export class TodoService {
             id: 3,
             description: "Piedra del tiempo",
             done: false
+        },
+        {
+            id: 4,
+            description: "Piedra del mundo",
+            done: false
+        },
+        {
+            id: 5,
+            description: "Piedra del Angular",
+            done: true
         }
     ]
 
+    get totalTodos() {
+        return this.todos.length;
+    }
+    get completedTodos() {
+        const completed = this.todos.filter(todo => todo.done === true);
+        return completed.length;
+    }
+    get pendingTodos() {
+        const pending = this.todos.filter(todo => todo.done === false);
+        return pending.length;
+    }
 
-    findAll(): Todo[] {
+
+    findAll(statusArgs: StatusArgs): Todo[] {
+
+        const { status } = statusArgs;
+
+        if (status !== undefined) {
+            return this.todos.filter(todo => todo.done === status);
+        }
         return this.todos;
     }
 
@@ -50,21 +79,21 @@ export class TodoService {
         return todo;
     }
 
-    update(id:number,updateTodoInput: UpdateTodoInput) {
+    update(id: number, updateTodoInput: UpdateTodoInput) {
 
         const { description, done } = updateTodoInput;
         const todo = this.findOne(id);
-        
+
         if (description) {
             todo.description = description;
         }
         if (done !== undefined) {
             todo.done = done;
         }
-        
+
         this.todos = this.todos.map(todo => todo.id === id ? todo : todo);
-        
-        return todo;    
+
+        return todo;
     }
 
     remove(id: number) {
@@ -73,6 +102,5 @@ export class TodoService {
         this.todos = this.todos.filter(todo => todo.id !== id);
 
         return true;
-
-    } 
+    }
 }
